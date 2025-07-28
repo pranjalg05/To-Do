@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TaskManager {
 
@@ -26,7 +27,7 @@ public class TaskManager {
         tasks.forEach(t -> System.out.println(t.getID() + " | " + t.getTask() + " | " + t.isCompleted()));
     }
 
-    private void reloadFile(){
+    public void reloadFile(){
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(taskFile, false));
             tasks.forEach(t -> {
@@ -44,14 +45,20 @@ public class TaskManager {
     }
 
     public void addTask(String task){
-        Task newtask = new Task(tasks.get(tasks.size()-1).getID()+1, task, false);
+        Task newtask = new Task(tasks.size()+1, task, false);
         tasks.add(newtask);
-        reloadFile();
     }
 
-    public void markCompleted(int ID){
-        tasks.stream().filter(t -> t.getID() == ID).map(t -> t.setCompleted(true));
-        reloadFile();
+    public void deleteTask(int ID){
+        tasks.removeIf(t -> t.getID()==ID);
+    }
+
+    public void markTaskAsComplete(int ID){
+        tasks.forEach(
+                n -> {
+                    if(n.getID()==ID) n.setCompleted(true);
+                }
+        );
     }
 
 }
